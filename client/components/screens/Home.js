@@ -2,25 +2,32 @@ import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import { StyleSheet, Text, View, Button, TextInput } from "react-native";
 import { connect } from "react-redux";
-import { fetchItem } from "../store/item";
+import { fetchItem } from "../../store/item";
 
 class Home extends React.Component {
-  constructor(){
+  constructor({ route, navigation }){
     super()
     this.state = {
       text: '',
-      carbs: ''
+      carbs: '',
+      user: ''
     }
     this.handleChange = this.handleChange.bind(this);
     this.pressHandler = this.pressHandler.bind(this);
   }
-  // const [text, setText] = useState('')
+  componentDidMount() {
+    const { user } = this.props.route.params;
+    this.setState({
+      ...this.state,
+      user: user
+    })
+  }
 
   async pressHandler() {
     await this.props.fetchItem(this.state.text)
     const item = this.props.item
     const nutrientsList = item.foods[0].foodNutrients
-    console.log(item)
+    // console.log(item)
     nutrientsList.forEach(nutrient => {
       if (nutrient.nutrientName === "Carbohydrate, by difference") {
         this.setState({
@@ -38,7 +45,7 @@ class Home extends React.Component {
 
   render() {
     return (
-      <View>
+      <View style={styles.container}>
         <TextInput
           name='text'
           value={this.state.text}
@@ -65,6 +72,12 @@ const styles = StyleSheet.create({
     fontWeight: '100',
     textAlign: 'center',
   },
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+    alignItems: "center",
+    justifyContent: "center",
+  },
 })
 
 const mapState = (state) => {
@@ -79,5 +92,6 @@ const mapDispatch = (dispatch) => {
     fetchItem: (item) => dispatch(fetchItem(item))
   };
 };
+
 
 export default connect(mapState, mapDispatch)(Home);
