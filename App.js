@@ -12,11 +12,24 @@ import LoadingScreen from "./client/components/screens/LoadingScreen.js";
 import LoginScreen from "./client/components/screens/LoginScreen.js";
 import firebase from "firebase";
 import { firebaseConfig } from "./config";
+import 'firebase/firestore';
+
 firebase.initializeApp(firebaseConfig);
+
+export const db = firebase.firestore();
+
+
+// async function testFirebase () {
+//   const data = db.collection('users')
+//   return data
+// }
+
+
 
 const Stack = createStackNavigator();
 
 export default function App() {
+
   return (
     <Provider store={store}>
       <NavigationContainer>

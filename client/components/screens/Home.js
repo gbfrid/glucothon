@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View, Button, TextInput } from "react-native";
 import { connect } from "react-redux";
 import { fetchItem } from "../../store/item";
+import { db } from '../../../App.js'
+
 
 class Home extends React.Component {
   constructor({ route, navigation }){
@@ -14,13 +16,31 @@ class Home extends React.Component {
     }
     this.handleChange = this.handleChange.bind(this);
     this.pressHandler = this.pressHandler.bind(this);
+    // this.testFirebase = this.testFirebase.bind(this)
   }
-  componentDidMount() {
+
+
+  addToFirebase(usersRef) {
+    usersRef.doc('Jeff').set({
+      name: "Jeff",
+      email: "jeff@gabe.com"
+    })
+  }
+
+
+
+
+
+
+  async componentDidMount() {
+    const usersRef = db.collection('users')
+
     const { user } = this.props.route.params;
     this.setState({
       ...this.state,
       user: user
     })
+    this.addToFirebase(usersRef)
   }
 
   async pressHandler() {
