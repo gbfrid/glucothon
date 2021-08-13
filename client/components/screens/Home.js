@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View, Button, TextInput } from "react-native";
 import { connect } from "react-redux";
 import { fetchItem } from "../../store/item";
-import { db } from '../../../App.js'
+import { db } from '../../../config.js'
 
 
 class Home extends React.Component {
@@ -16,14 +16,15 @@ class Home extends React.Component {
     }
     this.handleChange = this.handleChange.bind(this);
     this.pressHandler = this.pressHandler.bind(this);
-    // this.testFirebase = this.testFirebase.bind(this)
   }
 
 
-  addToFirebase(usersRef) {
-    usersRef.doc('Jeff').set({
-      name: "Jeff",
-      email: "jeff@gabe.com"
+  addToFirebase(usersRef, user) {
+    usersRef.doc(user.id).set({
+      name: user.name,
+      firstName: user.givenName,
+      email: user.email,
+      photoUrl: user.photoUrl
     })
   }
 
@@ -34,20 +35,25 @@ class Home extends React.Component {
 
   async componentDidMount() {
     const usersRef = db.collection('users')
-
     const { user } = this.props.route.params;
     this.setState({
       ...this.state,
       user: user
     })
-    this.addToFirebase(usersRef)
+    try {
+    const fireBaseUser = (await usersRef.doc(user.id).get()).data()
+    if (!fireBaseUser) {
+      this.addToFirebase(usersRef, user)
+    }
+    } catch(e) {
+      console.log(e)
+    }
   }
 
   async pressHandler() {
     await this.props.fetchItem(this.state.text)
     const item = this.props.item
     const nutrientsList = item.foods[0].foodNutrients
-    // console.log(item)
     nutrientsList.forEach(nutrient => {
       if (nutrient.nutrientName === "Carbohydrate, by difference") {
         this.setState({

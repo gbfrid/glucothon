@@ -1,3 +1,6 @@
+import firebase from "firebase";
+
+
 export const firebaseConfig = {
   apiKey: "AIzaSyDKFjMZztPySPSdKILz-Y3_iaPzAJqZ3Qc",
   authDomain: "glucothon.firebaseapp.com",
@@ -8,3 +11,7 @@ export const firebaseConfig = {
   // databaseURL: "https://glucothon-default-rtdb.firebaseio.com/",
   measurementId: "G-BDH5NWERE5"
 };
+
+firebase.initializeApp(firebaseConfig);
+
+export const db = firebase.firestore();
