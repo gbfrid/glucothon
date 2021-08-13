@@ -1,8 +1,8 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
-import { StyleSheet, Text, View, Button, TextInput } from "react-native";
+import { StyleSheet, Text, View, Button, TextInput, Image, ScrollView } from "react-native";
 import { connect } from "react-redux";
-import { fetchItem } from "../../store/item";
+import { fetchItems } from "../../store/item";
 import { db } from "../../../config.js";
 
 class Home extends React.Component {
@@ -11,13 +11,14 @@ class Home extends React.Component {
     this.state = {
       text: "",
       user: "",
-      nutrients: {
-        carbs: 0,
-        fiber: 0,
-        sugars: 0,
-        protein: 0,
-        fat: 0,
-      },
+      items: []
+      // nutrients: {
+      //   carbs: 0,
+      //   fiber: 0,
+      //   sugars: 0,
+      //   protein: 0,
+      //   fat: 0,
+      // },
     };
     this.handleChange = this.handleChange.bind(this);
     this.pressHandler = this.pressHandler.bind(this);
@@ -99,11 +100,12 @@ class Home extends React.Component {
   // }
 
   async pressHandler() {
-    await this.props.fetchItem();
-    const item = this.props.item;
-    // const nutrientsList = item.foods[0].foodNutrients;
-    console.log(item);
-    // this.setNutrients(nutrientsList);
+    await this.props.fetchItems(this.state.text);
+    let items = await this.props.item;
+    items = items.common.slice(0, 5)
+    this.setState({
+      items: items
+    })
   }
 
   handleChange(textValue) {
@@ -113,6 +115,7 @@ class Home extends React.Component {
   }
 
   render() {
+    // console.log(this.state)
     return (
       <View style={styles.container}>
         <TextInput
@@ -124,6 +127,19 @@ class Home extends React.Component {
         />
 
         <Button title={"Find Food"} onPress={this.pressHandler} />
+        <ScrollView>
+          {this.state.items.map((item, i) => {
+            return (
+              <View key={i}>
+              <Image
+              style={styles.image}
+              source={{ uri: item.photo.thumb }}
+              />
+              <Text>{item.food_name}</Text>
+            </View>
+            )
+          })}
+        </ScrollView>
         {/* <View>
           <Text>{`${this.state.nutrients.carbs}g Carb`}</Text>
           <Text>{`${this.state.nutrients.sugars}g Sugar`}</Text>
@@ -136,6 +152,10 @@ class Home extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  image: {
+    width: 100,
+    height: 100,
+  },
   text: {
     color: "rgb(59,108,212)",
     fontSize: 20,
@@ -158,7 +178,7 @@ const mapState = (state) => {
 
 const mapDispatch = (dispatch) => {
   return {
-    fetchItem: (item) => dispatch(fetchItem(item)),
+    fetchItems: (food) => dispatch(fetchItems(food)),
   };
 };
 
