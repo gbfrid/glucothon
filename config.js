@@ -1,6 +1,6 @@
 import firebase from "firebase";
 
-
+//Firebase
 export const firebaseConfig = {
   apiKey: "AIzaSyDKFjMZztPySPSdKILz-Y3_iaPzAJqZ3Qc",
   authDomain: "glucothon.firebaseapp.com",
@@ -15,3 +15,10 @@ export const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 export const db = firebase.firestore();
+
+
+//API
+
+export const application_id = '58168d60';
+
+export const application_key = '65a3322a4124fccabfce18b8b1ab7f8b';

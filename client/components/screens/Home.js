@@ -11,7 +11,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { connect } from "react-redux";
-import { fetchItems } from "../../store/item";
+import { fetchItems } from "../../store/items";
+import { setItem } from "../../store/item";
 import { db } from "../../../config.js";
 
 class Home extends React.Component {
@@ -28,9 +29,12 @@ class Home extends React.Component {
       //   protein: 0,
       //   fat: 0,
       // },
+      item: {}
     };
     this.handleChange = this.handleChange.bind(this);
+    this.searchHandler = this.searchHandler.bind(this);
     this.pressHandler = this.pressHandler.bind(this);
+
   }
 
   addToFirebase(usersRef, user) {
@@ -108,13 +112,51 @@ class Home extends React.Component {
   //   });
   // }
 
-  async pressHandler() {
+  async searchHandler() {
     await this.props.fetchItems(this.state.text);
-    let items = await this.props.item;
+    let items = await this.props.items;
     items = items.common.slice(0, 5);
     this.setState({
       items: items,
     });
+  }
+
+  async pressHandler(item) {
+    // await this.props.setItem(item)
+    // const data = this.props.item
+
+    const carbs = item.full_nutrients.find(item => {
+      return item.attr_id === 205
+    });
+    const sugar = item.full_nutrients.find(item => {
+      return item.attr_id === 269
+    })
+    const protein = item.full_nutrients.find(item => {
+      return item.attr_id === 203
+    })
+    const fat = item.full_nutrients.find(item => {
+      return item.attr_id === 204
+    })
+    const fiber = item.full_nutrients.find(item => {
+      return item.attr_id === 291
+    })
+    let parsedItem = {
+      name: item.food_name,
+      servingSize: item.serving_qty,
+      imageUrl: item.photo.thumb,
+      servingWeight: item.serving_weight_grams,
+      carbs: carbs.value,
+      sugar: sugar.value,
+      fiber: fiber.value,
+      protein: protein.value,
+      fat: fat.value,
+    }
+
+     this.setState({
+      ...this.state,
+      item: parsedItem
+    })
+    // console.log("PARSED", parsedItem)
   }
 
   handleChange(textValue) {
@@ -124,7 +166,7 @@ class Home extends React.Component {
   }
 
   render() {
-    // console.log(this.state)
+    console.log(this.state.item)
     return (
       <View style={styles.container}>
         <TextInput
@@ -135,15 +177,14 @@ class Home extends React.Component {
           onChangeText={this.handleChange}
         />
 
-        <Button title={"Find Food"} onPress={this.pressHandler} />
+        <Button title={"Find Food"} onPress={this.searchHandler} />
         <ScrollView>
-          {this.state.items.map((item, i) => {
+          {this.state.items && this.state.items.map((item, i) => {
             return (
               <View key={i}>
                 <TouchableOpacity
-                  // style={styles.button}
                   activeOpacity={0.7}
-                  onPress={() => alert('ya got me')}
+                  onPress={() => this.pressHandler(item)}
                 >
                   <Image
                     style={styles.image}
@@ -187,13 +228,15 @@ const styles = StyleSheet.create({
 
 const mapState = (state) => {
   return {
-    item: state.item,
+    items: state.items,
+    // item: state.item
   };
 };
 
 const mapDispatch = (dispatch) => {
   return {
     fetchItems: (food) => dispatch(fetchItems(food)),
+    // setItem: (foodName) => dispatch(setItem(foodName))
   };
 };
 
