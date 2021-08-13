@@ -1,6 +1,15 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
-import { StyleSheet, Text, View, Button, TextInput, Image, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  TextInput,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { connect } from "react-redux";
 import { fetchItems } from "../../store/item";
 import { db } from "../../../config.js";
@@ -11,7 +20,7 @@ class Home extends React.Component {
     this.state = {
       text: "",
       user: "",
-      items: []
+      items: [],
       // nutrients: {
       //   carbs: 0,
       //   fiber: 0,
@@ -102,10 +111,10 @@ class Home extends React.Component {
   async pressHandler() {
     await this.props.fetchItems(this.state.text);
     let items = await this.props.item;
-    items = items.common.slice(0, 5)
+    items = items.common.slice(0, 5);
     this.setState({
-      items: items
-    })
+      items: items,
+    });
   }
 
   handleChange(textValue) {
@@ -131,13 +140,19 @@ class Home extends React.Component {
           {this.state.items.map((item, i) => {
             return (
               <View key={i}>
-              <Image
-              style={styles.image}
-              source={{ uri: item.photo.thumb }}
-              />
-              <Text>{item.food_name}</Text>
-            </View>
-            )
+                <TouchableOpacity
+                  // style={styles.button}
+                  activeOpacity={0.7}
+                  onPress={() => alert('ya got me')}
+                >
+                  <Image
+                    style={styles.image}
+                    source={{ uri: item.photo.thumb }}
+                  />
+                  <Text>{item.food_name}</Text>
+                </TouchableOpacity>
+              </View>
+            );
           })}
         </ScrollView>
         {/* <View>
