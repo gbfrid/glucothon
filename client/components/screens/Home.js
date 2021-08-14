@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React from "react";
 import {
   StyleSheet,
   Text,
@@ -14,9 +14,12 @@ import { connect } from "react-redux";
 import { fetchItems } from "../../store/items";
 import { setItem } from "../../store/item";
 import { db } from "../../../config.js";
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 
 class Home extends React.Component {
-  constructor({ route, navigation }) {
+  constructor() {
     super();
     this.state = {
       text: "",
@@ -62,6 +65,131 @@ class Home extends React.Component {
       console.log(e);
     }
   }
+
+
+  async searchHandler() {
+    await this.props.fetchItems(this.state.text);
+    let items = await this.props.items;
+    items = items.common.slice(0, 10);
+    this.setState({
+      items: items,
+    });
+  }
+
+  async pressHandler(item) {
+
+    const carbs = await item.full_nutrients.find(item => {
+      return item.attr_id === 205
+    });
+    const sugar = await item.full_nutrients.find(item => {
+      return item.attr_id === 269
+    })
+    const protein = await  item.full_nutrients.find(item => {
+      return item.attr_id === 203
+    })
+    const fat = await item.full_nutrients.find(item => {
+      return item.attr_id === 204
+    })
+    const fiber = await item.full_nutrients.find(item => {
+      return item.attr_id === 291
+    })
+    let parsedItem = {
+      name: item.food_name,
+      servingSize: item.serving_qty,
+      imageUrl: item.photo.thumb,
+      servingWeight: item.serving_weight_grams,
+      carbs: carbs.value,
+      sugar: sugar.value,
+      fiber: fiber.value,
+      protein: protein.value,
+      fat: fat.value,
+    }
+
+     this.setState({
+      ...this.state,
+      item: parsedItem
+    })
+    this.props.navigation.navigate('FoodItem', {
+      item: this.state.item
+    })
+  }
+
+  handleChange(textValue) {
+    this.setState({
+      text: textValue,
+    });
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <TextInput
+          name="text"
+          value={this.state.text}
+          style={{ fontSize: 42, color: "steelblue" }}
+          placeholder="Enter A Food"
+          onChangeText={this.handleChange}
+        />
+
+        <Button title={"Find Food"} onPress={this.searchHandler} />
+        <ScrollView>
+          {this.state.items && this.state.items.map((item, i) => {
+            return (
+              <View key={i}>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={() => this.pressHandler(item)}
+                >
+                  <Image
+                    style={styles.image}
+                    source={{ uri: item.photo.thumb }}
+                  />
+                  <Text>{item.food_name}</Text>
+                </TouchableOpacity>
+              </View>
+            );
+          })}
+        </ScrollView>
+      </View>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  image: {
+    width: 75,
+    height: 75,
+  },
+  text: {
+    color: "rgb(59,108,212)",
+    fontSize: 20,
+    fontWeight: "100",
+    textAlign: "center",
+  },
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+    alignItems: "center",
+    justifyContent: "flex-start",
+  },
+});
+
+const mapState = (state) => {
+  return {
+    items: state.items,
+    // item: state.item
+  };
+};
+
+const mapDispatch = (dispatch) => {
+  return {
+    fetchItems: (food) => dispatch(fetchItems(food)),
+    // setItem: (foodName) => dispatch(setItem(foodName))
+  };
+};
+
+export default connect(mapState, mapDispatch)(Home);
+
 
   // setNutrients(nutrientsList) {
   //   nutrientsList.forEach((nutrient) => {
@@ -111,133 +239,3 @@ class Home extends React.Component {
   //     }
   //   });
   // }
-
-  async searchHandler() {
-    await this.props.fetchItems(this.state.text);
-    let items = await this.props.items;
-    items = items.common.slice(0, 5);
-    this.setState({
-      items: items,
-    });
-  }
-
-  async pressHandler(item) {
-    // await this.props.setItem(item)
-    // const data = this.props.item
-
-    const carbs = item.full_nutrients.find(item => {
-      return item.attr_id === 205
-    });
-    const sugar = item.full_nutrients.find(item => {
-      return item.attr_id === 269
-    })
-    const protein = item.full_nutrients.find(item => {
-      return item.attr_id === 203
-    })
-    const fat = item.full_nutrients.find(item => {
-      return item.attr_id === 204
-    })
-    const fiber = item.full_nutrients.find(item => {
-      return item.attr_id === 291
-    })
-    let parsedItem = {
-      name: item.food_name,
-      servingSize: item.serving_qty,
-      imageUrl: item.photo.thumb,
-      servingWeight: item.serving_weight_grams,
-      carbs: carbs.value,
-      sugar: sugar.value,
-      fiber: fiber.value,
-      protein: protein.value,
-      fat: fat.value,
-    }
-
-     this.setState({
-      ...this.state,
-      item: parsedItem
-    })
-    // console.log("PARSED", parsedItem)
-  }
-
-  handleChange(textValue) {
-    this.setState({
-      text: textValue,
-    });
-  }
-
-  render() {
-    console.log(this.state.item)
-    return (
-      <View style={styles.container}>
-        <TextInput
-          name="text"
-          value={this.state.text}
-          style={{ fontSize: 42, color: "steelblue" }}
-          placeholder="Enter A Food"
-          onChangeText={this.handleChange}
-        />
-
-        <Button title={"Find Food"} onPress={this.searchHandler} />
-        <ScrollView>
-          {this.state.items && this.state.items.map((item, i) => {
-            return (
-              <View key={i}>
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  onPress={() => this.pressHandler(item)}
-                >
-                  <Image
-                    style={styles.image}
-                    source={{ uri: item.photo.thumb }}
-                  />
-                  <Text>{item.food_name}</Text>
-                </TouchableOpacity>
-              </View>
-            );
-          })}
-        </ScrollView>
-        {/* <View>
-          <Text>{`${this.state.nutrients.carbs}g Carb`}</Text>
-          <Text>{`${this.state.nutrients.sugars}g Sugar`}</Text>
-          <Text>{`${this.state.nutrients.fiber}g Fiber`}</Text>
-          <Text>{`${this.state.nutrients.fat}g Fat`}</Text>
-        </View> */}
-      </View>
-    );
-  }
-}
-
-const styles = StyleSheet.create({
-  image: {
-    width: 100,
-    height: 100,
-  },
-  text: {
-    color: "rgb(59,108,212)",
-    fontSize: 20,
-    fontWeight: "100",
-    textAlign: "center",
-  },
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-    alignItems: "center",
-    justifyContent: "flex-start",
-  },
-});
-
-const mapState = (state) => {
-  return {
-    items: state.items,
-    // item: state.item
-  };
-};
-
-const mapDispatch = (dispatch) => {
-  return {
-    fetchItems: (food) => dispatch(fetchItems(food)),
-    // setItem: (foodName) => dispatch(setItem(foodName))
-  };
-};
-
-export default connect(mapState, mapDispatch)(Home);

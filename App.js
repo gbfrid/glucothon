@@ -1,18 +1,20 @@
 import "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React from "react";
 import { Provider } from "react-redux";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createSwitchNavigator, createAppContainer } from "react-navigation";
 import { StyleSheet, Text, View, Button } from "react-native";
 import Home from "./client/components/screens/Home.js";
+import FoodItem from './client/components/screens/FoodItem.js'
 import store from "./client/store";
-import LoadingScreen from "./client/components/screens/LoadingScreen.js";
 import LoginScreen from "./client/components/screens/LoginScreen.js";
 import firebase from "firebase";
 import { firebaseConfig } from "./config";
 import 'firebase/firestore';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NativeBaseProvider, Box } from 'native-base';
 
 
 // async function testFirebase () {
@@ -22,7 +24,7 @@ import 'firebase/firestore';
 
 
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 export default function App() {
 
@@ -40,6 +42,7 @@ export default function App() {
                 return null;
               },
             }} />
+          <Stack.Screen name="FoodItem" component={FoodItem} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
