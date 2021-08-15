@@ -5,14 +5,17 @@ import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Picker } from "@react-native-picker/picker";
+import { db } from "../../../config.js";
 
 class FoodItem extends React.Component {
   constructor() {
     super();
     this.state = {
       item: {},
-      selectedNumber: '1',
+      selectedNumber: "1",
     };
+    this.updateServingSize = this.updateServingSize.bind(this);
+    this.addToMeal = this.addToMeal.bind(this);
   }
 
   componentDidMount() {
@@ -21,26 +24,71 @@ class FoodItem extends React.Component {
     });
   }
 
-  updateServingSize(value) {
-    const updated = value * parseInt(this.state.selectedNumber, 10);
-    return updated.toFixed(1)
+  updateServingSize(nutrientValue, itemValue) {
+    const updated = nutrientValue * parseInt(itemValue, 10);
+    return updated.toFixed(1);
+  }
+
+  addToFirebase(mealsRef, item) {
+    mealsRef.doc().set({
+      userId: this.props.route.params.user.id,
+      items: [item],
+      open: true
+    });
+  }
+
+  async addToMeal(item) {
+    const mealsRef = db.collection("meals");
+    const userId = this.props.route.params.user.id.toString();
+    try {
+      const snapshot =  await mealsRef
+        .where("userId", "==", userId)
+        .where('open', '==', true)
+        .get();
+      if (snapshot.empty) {
+        console.log('making new meal')
+        this.addToFirebase(mealsRef, item);
+      } else {
+        let items = {}
+        let id = ''
+        snapshot.forEach(doc => {
+          id = doc.id
+          items = doc.data().items
+          // console.log(items)
+        })
+        items.push(this.state.item);
+        await mealsRef.doc(id).update({items: items});
+      }
+    } catch(error) {
+      console.log(error)
+    }
+
   }
   render() {
-    console.log(this.state);
+    // console.log(this.props.route.params.user);
     return (
       <View style={styles.container}>
+        <Button
+          title={"Add To Meal"}
+          onPress={() => this.addToMeal(this.state.item)}
+        />
+
         <Text>{this.state.item.name}</Text>
 
         <View style={styles.info}>
-        <Image
-          style={styles.image}
-          source={{ uri: this.state.item.imageUrl }}
-        />
-        <Text>Carbs: {this.updateServingSize(this.state.item.carbs)}</Text>
-        <Text>Fat: {this.updateServingSize(this.state.item.fat)}</Text>
-        <Text>Protein: {this.updateServingSize(this.state.item.protein)}</Text>
-        <Text>Sugar: {this.updateServingSize(this.state.item.sugar)}</Text>
-        <Text>Fiber: {this.updateServingSize(this.state.item.fiber)}</Text>
+          <Image
+            style={styles.image}
+            source={{ uri: this.state.item.imageUrl }}
+          />
+          <Text>Carbs: {this.state.item.carbs}</Text>
+          <Text>Fat: {this.state.item.fat}</Text>
+          <Text>Protein: {this.state.item.protein}</Text>
+          <Text>Sugar: {this.state.item.sugar}</Text>
+          <Text>Fiber: {this.state.item.fiber}</Text>
+          <Text>
+            Net Carbs:{" "}
+            {(this.state.item.carbs - this.state.item.fiber).toFixed(1)}
+          </Text>
         </View>
 
         <View style={styles.serving}>
@@ -50,9 +98,35 @@ class FoodItem extends React.Component {
               <Picker
                 style={styles.picker}
                 selectedValue={this.state.selectedNumber}
-                onValueChange={(itemValue, itemIndex) =>
+                onValueChange={(itemValue) =>
                   this.setState({
-                    ...this.state,
+                    item: {
+                      ...this.state.item,
+                      carbs: this.updateServingSize(
+                        this.props.route.params.item.carbs,
+                        parseInt(itemValue, 10)
+                      ),
+                      protein: this.updateServingSize(
+                        this.props.route.params.item.protein,
+                        parseInt(itemValue, 10)
+                      ),
+                      fat: this.updateServingSize(
+                        this.props.route.params.item.fat,
+                        parseInt(itemValue, 10)
+                      ),
+                      fiber: this.updateServingSize(
+                        this.props.route.params.item.fiber,
+                        parseInt(itemValue, 10)
+                      ),
+                      sugar: this.updateServingSize(
+                        this.props.route.params.item.sugar,
+                        parseInt(itemValue, 10)
+                      ),
+                      servingWeight: this.updateServingSize(
+                        this.props.route.params.item.servingWeight,
+                        parseInt(itemValue, 10)
+                      ),
+                    },
                     selectedNumber: itemValue,
                   })
                 }
@@ -69,7 +143,7 @@ class FoodItem extends React.Component {
                 <Picker.Item label="10" value="10" />
               </Picker>
             }{" "}
-            ({this.state.item.servingWeight * parseInt(this.state.selectedNumber, 10)}g)
+            ({parseInt(this.state.item.servingWeight, 10)}g)
           </Text>
         </View>
       </View>
@@ -82,10 +156,10 @@ const styles = StyleSheet.create({
   //   justifyContent: "center",
   // },
   // info: {
-    // flex: 1,
-    // justifyContent: "center",
+  // flex: 1,
+  // justifyContent: "center",
 
-    // justifyContent: "flex-start"
+  // justifyContent: "flex-start"
   // },
   picker: {
     height: 110,
@@ -96,7 +170,7 @@ const styles = StyleSheet.create({
     height: 100,
   },
   container: {
-    flex:1,
+    flex: 1,
     backgroundColor: "white",
     alignItems: "center",
     justifyContent: "center",

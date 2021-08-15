@@ -23,7 +23,7 @@ class Home extends React.Component {
     super();
     this.state = {
       text: "",
-      user: "",
+      user: {},
       items: [],
       // nutrients: {
       //   carbs: 0,
@@ -98,11 +98,11 @@ class Home extends React.Component {
       servingSize: item.serving_qty,
       imageUrl: item.photo.thumb,
       servingWeight: item.serving_weight_grams,
-      carbs: carbs.value,
-      sugar: sugar.value,
-      fiber: fiber.value,
-      protein: protein.value,
-      fat: fat.value,
+      carbs: carbs.value.toFixed(1),
+      sugar: sugar.value.toFixed(1),
+      fiber: fiber.value.toFixed(1),
+      protein: protein.value.toFixed(1),
+      fat: fat.value.toFixed(1),
     }
 
      this.setState({
@@ -110,7 +110,8 @@ class Home extends React.Component {
       item: parsedItem
     })
     this.props.navigation.navigate('FoodItem', {
-      item: this.state.item
+      item: this.state.item,
+      user: this.state.user
     })
   }
 
