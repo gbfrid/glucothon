@@ -2,73 +2,116 @@ import React, { useState } from "react";
 import { Text, View, ScrollView, TextInput, StyleSheet } from "react-native";
 import { connect } from "react-redux";
 import { db } from "../../../config.js";
-import { TextField, Button, SegmentedControl } from "react-native-ios-kit";
-import { Picker } from "@react-native-picker/picker";
+// import { TextField, Button, SegmentedControl } from "react-native-ios-kit";
+import {
+  Center,
+  FormControl,
+  Input,
+  Stack,
+  Slider,
+  Box,
+  Select,
+  VStack,
+  CheckIcon,
+  Button,
+  HStack,
+  useToast
+} from "native-base";
 
 function AddHealthData(props) {
-  // const pickerArray = Array.from(Array(101).keys());
-  // console.log(pickerArray)
-  const [BG, setBG] = useState("");
-  const [units, setUnits] = useState("");
+  const toast = useToast()
+  const [BG, setBG] = useState(100);
+  const [units, setUnits] = useState(0);
+
   const [mealType, setMealType] = useState("");
-  const [selectedIndex, setIndex] = useState("");
 
   const mealsRef = db.collection("meals");
 
   const { userId, mealId } = props.route.params;
-  console.log(BG, units, mealType);
   async function handlePress() {
     await mealsRef.doc(mealId).update({
       preBG: BG,
       insulinDose: units,
       mealType: mealType,
-      open: false
+      open: false,
     });
-    props.navigation.navigate('Home')
+    toast.show({
+      title: "Meal Logged!",
+      status: 'success',
+      height: 70,
+      width: 250
+    })
+    props.navigation.navigate("Home");
   }
+
   return (
     <View>
-      <Text>Hello</Text>
-      <TextField
-        // style={{height: 40}}
-        placeholder="Before Meal Blood Glucose"
-        onValueChange={(BG) => setBG(BG)}
-        value={BG}
-        type="number"
-      />
+      <Center>
+        <Stack mx={5} space={4} alignItems="center" w="100%">
+          <HStack>
+            <Text>Bloog Sugar</Text>
+            <Box mx={5} w="200">
+              <Slider
+                maxValue={400}
+                defaultValue={100}
+                colorScheme="cyan"
+                onChange={(v) => {
+                  setBG(Math.floor(v));
+                }}
+              >
+                <Slider.Track>
+                  <Slider.FilledTrack />
+                </Slider.Track>
+                <Slider.Thumb />
+              </Slider>
+            </Box>
+            <Text>{BG} mg/dL</Text>
+          </HStack>
+        </Stack>
 
-      <SegmentedControl
-        values={["Breakfast", "Lunch", "Dinner"]}
-        selectedIndex={selectedIndex}
-        onValueChange={(value, index) => {
-          setIndex(index);
-          setMealType(value);
-        }}
-        style={{ width: 222, alignSelf: "center" }}
-      />
-      <View>
-        <Picker
-          style={styles.picker}
-          selectedValue={units}
-          onValueChange={(units) => {
-            setUnits(units);
-          }}
-        >
-          <Picker.Item label="1" value="1" />
-          <Picker.Item label="2" value="2" />
-          <Picker.Item label="3" value="3" />
-          <Picker.Item label="4" value="4" />
-          <Picker.Item label="5" value="5" />
-          <Picker.Item label="6" value="6" />
-          <Picker.Item label="7" value="7" />
-          <Picker.Item label="8" value="8" />
-          <Picker.Item label="9" value="9" />
-          <Picker.Item label="10" value="10" />
-        </Picker>
-      </View>
-      <Button centered rounded onPress={handlePress}>
-        Enter Meal
-      </Button>
+        <Stack mx={5} space={4} alignItems="center" w="100%">
+          <HStack>
+          <Text>Insulin Dose</Text>
+          <Box mx={5} w="200">
+            <Slider
+              defaultValue={0}
+              colorScheme="cyan"
+              onChange={(v) => {
+                setUnits(Math.floor(v));
+              }}
+            >
+              <Slider.Track>
+                <Slider.FilledTrack />
+              </Slider.Track>
+              <Slider.Thumb />
+            </Slider>
+          </Box>
+          <Text>{units} units</Text>
+
+          </HStack>
+        </Stack>
+
+        <VStack alignItems="center" space={4}>
+          <Select
+            selectedValue={mealType}
+            minWidth={200}
+            placeholder="Select Meal"
+            onValueChange={(itemValue) => setMealType(itemValue)}
+            _selectedItem={{
+              bg: "cyan.600",
+              endIcon: <CheckIcon size={4} />,
+            }}
+          >
+            <Select.Item label="Breakfast" value="Breakfast" />
+            <Select.Item label="Lunch" value="Lunch" />
+            <Select.Item label="Dinner" value="Dinner" />
+            <Select.Item label="Snack" value="Snack" />
+            <Select.Item label="Dessert" value="Dessert" />
+          </Select>
+        </VStack>
+
+        <Button onPress={handlePress}>Enter Meal</Button>
+      </Center>
     </View>
   );
 }
