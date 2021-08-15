@@ -15,6 +15,8 @@ import { firebaseConfig } from "./config";
 import 'firebase/firestore';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NativeBaseProvider, Box } from 'native-base';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import HomeScreen from "./client/components/screens/HomeScreen.js";
 
 
 // async function testFirebase () {
@@ -25,6 +27,7 @@ import { NativeBaseProvider, Box } from 'native-base';
 
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 export default function App() {
 
@@ -33,7 +36,9 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Login">
           <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen
+          <Stack.Screen name="GlucoThon" component={HomeScreen} />
+
+          {/* <Stack.Screen
             name="Home"
             component={Home}
             options={{
@@ -41,7 +46,7 @@ export default function App() {
               headerLeft: () => {
                 return null;
               },
-            }} />
+            }} /> */}
           <Stack.Screen name="FoodItem" component={FoodItem} />
         </Stack.Navigator>
       </NavigationContainer>

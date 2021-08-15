@@ -50,8 +50,9 @@ class Home extends React.Component {
   }
 
   async componentDidMount() {
+    console.log(this.props)
     const usersRef = db.collection("users");
-    const { user } = this.props.route.params;
+    const { user } = this.props;
     this.setState({
       ...this.state,
       user: user,

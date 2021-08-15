@@ -54,11 +54,11 @@ class FoodItem extends React.Component {
         snapshot.forEach(doc => {
           id = doc.id
           items = doc.data().items
-          // console.log(items)
         })
         items.push(this.state.item);
         await mealsRef.doc(id).update({items: items});
       }
+      this.props.navigation.goBack()
     } catch(error) {
       console.log(error)
     }
