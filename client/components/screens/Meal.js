@@ -6,9 +6,10 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 
 function Meal(props) {
+  console.log(props)
   return (
    <View>
-     <Text>Hello There</Text>
+     <Text>Hello There, {props.user.givenName}</Text>
     </View>
   );
 }

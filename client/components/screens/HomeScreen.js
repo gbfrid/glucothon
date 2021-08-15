@@ -23,7 +23,10 @@ function HomeScreen(props) {
       <Stack.Screen name="Home">
         {(props) => <Home {...props} user={user} />}
       </Stack.Screen>
-      <Stack.Screen name="Meal" component={Meal} />
+      <Stack.Screen name="Meal">
+        {(props) => <Meal {...props} user={user} />}
+      </Stack.Screen>
+      {/* <Stack.Screen name="Meal" component={Meal} /> */}
     </Tab.Navigator>
   );
 }

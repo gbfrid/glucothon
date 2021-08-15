@@ -12,7 +12,6 @@ import {
 } from "react-native";
 import { connect } from "react-redux";
 import { fetchItems } from "../../store/items";
-import { setItem } from "../../store/item";
 import { db } from "../../../config.js";
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -25,13 +24,6 @@ class Home extends React.Component {
       text: "",
       user: {},
       items: [],
-      // nutrients: {
-      //   carbs: 0,
-      //   fiber: 0,
-      //   sugars: 0,
-      //   protein: 0,
-      //   fat: 0,
-      // },
       item: {}
     };
     this.handleChange = this.handleChange.bind(this);
@@ -50,7 +42,7 @@ class Home extends React.Component {
   }
 
   async componentDidMount() {
-    console.log(this.props)
+    // console.log(this.props)
     const usersRef = db.collection("users");
     const { user } = this.props;
     this.setState({
@@ -179,65 +171,15 @@ const styles = StyleSheet.create({
 const mapState = (state) => {
   return {
     items: state.items,
-    // item: state.item
   };
 };
 
 const mapDispatch = (dispatch) => {
   return {
     fetchItems: (food) => dispatch(fetchItems(food)),
-    // setItem: (foodName) => dispatch(setItem(foodName))
   };
 };
 
 export default connect(mapState, mapDispatch)(Home);
 
 
-  // setNutrients(nutrientsList) {
-  //   nutrientsList.forEach((nutrient) => {
-  //     switch (nutrient.nutrientId) {
-  //       case 1005:
-  //         return this.setState({
-  //           ...this.state,
-  //           nutrients: {
-  //             ...this.state.nutrients,
-  //             carbs: nutrient.value,
-  //           },
-  //         });
-  //       case 2000:
-  //         return this.setState({
-  //           ...this.state,
-  //           nutrients: {
-  //             ...this.state.nutrients,
-  //             sugars: nutrient.value,
-  //           },
-  //         });
-  //       case 1079:
-  //         return this.setState({
-  //           ...this.state,
-  //           nutrients: {
-  //             ...this.state.nutrients,
-  //             fiber: nutrient.value,
-  //           },
-  //         });
-  //       case 1003:
-  //         return this.setState({
-  //           ...this.state,
-  //           nutrients: {
-  //             ...this.state.nutrients,
-  //             protein: nutrient.value,
-  //           },
-  //         });
-  //       case 1004:
-  //         return this.setState({
-  //           ...this.state,
-  //           nutrients: {
-  //             ...this.state.nutrients,
-  //             fat: nutrient.value,
-  //           },
-  //         });
-  //       default:
-  //         return 0;
-  //     }
-  //   });
-  // }
