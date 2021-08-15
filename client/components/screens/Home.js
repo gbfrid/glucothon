@@ -4,7 +4,6 @@ import {
   StyleSheet,
   Text,
   View,
-  Button,
   TextInput,
   Image,
   ScrollView,
@@ -13,9 +12,9 @@ import {
 import { connect } from "react-redux";
 import { fetchItems } from "../../store/items";
 import { db } from "../../../config.js";
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Button, SearchBar } from "react-native-ios-kit";
 
 class Home extends React.Component {
   constructor() {
@@ -24,12 +23,11 @@ class Home extends React.Component {
       text: "",
       user: {},
       items: [],
-      item: {}
+      item: {},
     };
     this.handleChange = this.handleChange.bind(this);
     this.searchHandler = this.searchHandler.bind(this);
     this.pressHandler = this.pressHandler.bind(this);
-
   }
 
   addToFirebase(usersRef, user) {
@@ -59,7 +57,6 @@ class Home extends React.Component {
     }
   }
 
-
   async searchHandler() {
     await this.props.fetchItems(this.state.text);
     let items = await this.props.items;
@@ -70,22 +67,21 @@ class Home extends React.Component {
   }
 
   async pressHandler(item) {
-
-    const carbs = await item.full_nutrients.find(item => {
-      return item.attr_id === 205
+    const carbs = await item.full_nutrients.find((item) => {
+      return item.attr_id === 205;
     });
-    const sugar = await item.full_nutrients.find(item => {
-      return item.attr_id === 269
-    })
-    const protein = await  item.full_nutrients.find(item => {
-      return item.attr_id === 203
-    })
-    const fat = await item.full_nutrients.find(item => {
-      return item.attr_id === 204
-    })
-    const fiber = await item.full_nutrients.find(item => {
-      return item.attr_id === 291
-    })
+    const sugar = await item.full_nutrients.find((item) => {
+      return item.attr_id === 269;
+    });
+    const protein = await item.full_nutrients.find((item) => {
+      return item.attr_id === 203;
+    });
+    const fat = await item.full_nutrients.find((item) => {
+      return item.attr_id === 204;
+    });
+    const fiber = await item.full_nutrients.find((item) => {
+      return item.attr_id === 291;
+    });
     let parsedItem = {
       name: item.food_name,
       servingSize: item.serving_qty,
@@ -96,16 +92,16 @@ class Home extends React.Component {
       fiber: fiber.value.toFixed(1),
       protein: protein.value.toFixed(1),
       fat: fat.value.toFixed(1),
-    }
+    };
 
-     this.setState({
+    this.setState({
       ...this.state,
-      item: parsedItem
-    })
-    this.props.navigation.navigate('FoodItem', {
+      item: parsedItem,
+    });
+    this.props.navigation.navigate("FoodItem", {
       item: this.state.item,
-      user: this.state.user
-    })
+      user: this.state.user,
+    });
   }
 
   handleChange(textValue) {
@@ -117,32 +113,43 @@ class Home extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <TextInput
+        <SearchBar
+          value={this.state.text}
+          onValueChange={this.handleChange}
+          withCancel
+          animated
+          placeholder="Search For Food..."
+        />
+
+        {/* <TextInput
           name="text"
           value={this.state.text}
           style={{ fontSize: 42, color: "steelblue" }}
           placeholder="Enter A Food"
           onChangeText={this.handleChange}
-        />
+        /> */}
 
-        <Button title={"Find Food"} onPress={this.searchHandler} />
+        <Button inline rounded onPress={this.searchHandler}>
+          Find Food
+        </Button>
         <ScrollView>
-          {this.state.items && this.state.items.map((item, i) => {
-            return (
-              <View key={i}>
-                <TouchableOpacity
-                  activeOpacity={0.7}
-                  onPress={() => this.pressHandler(item)}
-                >
-                  <Image
-                    style={styles.image}
-                    source={{ uri: item.photo.thumb }}
-                  />
-                  <Text>{item.food_name}</Text>
-                </TouchableOpacity>
-              </View>
-            );
-          })}
+          {this.state.items &&
+            this.state.items.map((item, i) => {
+              return (
+                <View key={i}>
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    onPress={() => this.pressHandler(item)}
+                  >
+                    <Image
+                      style={styles.image}
+                      source={{ uri: item.photo.thumb }}
+                    />
+                    <Text>{item.food_name}</Text>
+                  </TouchableOpacity>
+                </View>
+              );
+            })}
         </ScrollView>
       </View>
     );
@@ -181,5 +188,3 @@ const mapDispatch = (dispatch) => {
 };
 
 export default connect(mapState, mapDispatch)(Home);
-
-

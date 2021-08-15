@@ -16,13 +16,10 @@ import 'firebase/firestore';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NativeBaseProvider, Box } from 'native-base';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import AddHealthData from "./client/components/screens/AddHealthData.js"
 import HomeScreen from "./client/components/screens/HomeScreen.js";
-
-
-// async function testFirebase () {
-//   const data = db.collection('users')
-//   return data
-// }
+import { ThemeProvider } from 'react-native-ios-kit';
+import { AppRegistry } from 'react-native';
 
 
 
@@ -33,35 +30,25 @@ export default function App() {
 
   return (
     <Provider store={store}>
+      <ThemeProvider>
+
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Login">
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="GlucoThon" component={HomeScreen} />
-
-          {/* <Stack.Screen
-            name="Home"
-            component={Home}
-            options={{
-              headerTitle: 'Hello There',
-              headerLeft: () => {
-                return null;
-              },
-            }} /> */}
           <Stack.Screen name="FoodItem" component={FoodItem} />
+         <Stack.Screen name="AddHealthData" component={AddHealthData} />
+
         </Stack.Navigator>
       </NavigationContainer>
+      </ThemeProvider>
     </Provider>
   );
 }
 
-// const appSwitchNavigator = createSwitchNavigator({
-//   LoadingScreen: LoadingScreen,
-//   LoginScreen: LoginScreen,
-//   DashboardScreen: DashboardScreen,
-//   Home: Home,
-// });
 
-// const AppNavigator = createAppContainer(appSwitchNavigator);
+AppRegistry.registerComponent('app', () => App);
+
 
 const styles = StyleSheet.create({
   container: {
