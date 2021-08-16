@@ -23,49 +23,51 @@ const History = (props) => {
       const mealsRef = db.collection("meals");
       const userId = props.user.id.toString();
       try {
-        const snapshot = await mealsRef.where("userId", "==", userId).get();
-        let items = {};
+        const snapshot = await mealsRef
+          .where("userId", "==", userId)
+          .where("open", "==", false)
+          .get();
+        let items = [];
         snapshot.forEach((doc) => {
-          items = doc.data();
+          items.push(doc.data());
         });
         setMealHistory(items);
+        // console.log(items)
       } catch (error) {
         console.log(error);
       }
     });
     return onTab;
   }, [props.navigation]);
-  const { mealType, insulinDose, preBG } = mealHistoryArray;
-  let carbTotal = 0;
-  if (mealHistoryArray.items) {
-    mealHistoryArray.items.forEach((item) => {
-      carbTotal += item.carbs - item.fiber;
-    });
-  }
+
   return (
     <View>
-      <HStack space={3}>
-        <VStack>
-          <Text>Meal</Text>
-          <Text>{mealType}</Text>
-        </VStack>
+      {mealHistoryArray &&
+        mealHistoryArray.map((meal, index) => {
+          return (
+            <HStack key={index} space={3}>
+              <VStack>
+                <Text underline>Meal</Text>
+                <Text>{meal.mealType}</Text>
+              </VStack>
 
-        <VStack>
-          <Text>Net Carbs</Text>
-          <Text>{carbTotal}</Text>
-        </VStack>
+              <VStack>
+                <Text underline>Net Carbs</Text>
+                <Text>{(meal.items[0].carbs = meal.items[0].fiber)}</Text>
+              </VStack>
 
-        <VStack>
-          <Text>Insulin</Text>
-          <Text>{insulinDose} units</Text>
-        </VStack>
+              <VStack>
+                <Text underline>Insulin</Text>
+                <Text>{meal.insulinDose} units</Text>
+              </VStack>
 
-        <VStack>
-          <Text>Premeal BG</Text>
-          <Text>{preBG}</Text>
-        </VStack>
-
-      </HStack>
+              <VStack>
+                <Text underline>Premeal BG</Text>
+                <Text>{meal.preBG}</Text>
+              </VStack>
+            </HStack>
+          );
+        })}
     </View>
   );
 };

@@ -81,25 +81,25 @@ function Meal(props) {
                   />
                   <VStack style={{width: "25%"}}>
                     <Center>
-                      <Text fontSize="md"> {item.name}</Text>
+                      <Text underline fontSize="md"> {item.name}</Text>
                       <Text>Qty: {item.servingSize}</Text>
                     </Center>
                   </VStack>
                   <VStack style={{width: "20%"}}>
                     <Center>
-                      <Text>Net Carbs</Text>
+                      <Text underline>Net Carbs</Text>
                       <Text>{(item.carbs - item.fiber).toFixed(1)}</Text>
                     </Center>
                   </VStack>
                   <VStack style={{width: "10%"}}>
                     <Center>
-                      <Text>Fat</Text>
+                      <Text underline>Fat</Text>
                       <Text>{item.fat}</Text>
                     </Center>
                   </VStack>
                   <VStack style={{width: "15%"}}>
                     <Center>
-                      <Text>Protein</Text>
+                      <Text underline>Protein</Text>
                       <Text>{item.protein}</Text>
                     </Center>
                   </VStack>
