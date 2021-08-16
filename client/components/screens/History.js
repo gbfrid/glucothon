@@ -27,7 +27,6 @@ const History = (props) => {
           items.push(doc.data());
         });
         setMealHistory(items);
-        // console.log(items)
       } catch (error) {
         console.log(error);
       }

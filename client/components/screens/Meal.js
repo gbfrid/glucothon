@@ -17,6 +17,7 @@ import {
   useToast,
   Image,
   Text,
+  ZStack
 } from "native-base";
 
 function Meal(props) {
@@ -62,6 +63,7 @@ function Meal(props) {
   }
   return (
     <View style={{flex: 1}}>
+      <ZStack>
 
       <ScrollView>
         <Stack space={2} >
@@ -111,13 +113,15 @@ function Meal(props) {
       </ScrollView>
       <Center>
       <Button
+        style={{position:'absolute', top: 670, left: 120, opacity: 0.7}}
         height={20}
-        width='50%'
+        width={200}
         onPress={pressHandler}
       >
         Add Health Data
       </Button>
       </Center>
+      </ZStack>
     </View>
   );
 }

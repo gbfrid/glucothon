@@ -5,7 +5,6 @@ import {
   Text,
   View,
   TextInput,
-  Image,
   ScrollView,
   TouchableOpacity,
   FlatList,
@@ -15,7 +14,7 @@ import { connect } from "react-redux";
 import { fetchItems } from "../../store/items";
 import { db } from "../../../config.js";
 import { SearchBar } from "react-native-ios-kit";
-import { Box, Center, NativeBaseProvider, Button } from "native-base";
+import { Box, Center, NativeBaseProvider, Button, Image } from "native-base";
 
 class Home extends React.Component {
   constructor() {
@@ -71,7 +70,7 @@ class Home extends React.Component {
   async searchHandler() {
     await this.props.fetchItems(this.state.text);
     let items = await this.props.items;
-    items = items.common.slice(0, 27);
+    items = items.common.slice(0, 30);
     this.setState({
       items: items,
     });
@@ -139,40 +138,24 @@ class Home extends React.Component {
           keyExtractor={(item) => item.food_name}
           numColumns={2}
           renderItem={({ item }) => (
-            <View>
-              <Text>{this.capitalize(item.food_name)}</Text>
+            <View style={{margin: 40}}>
+              <Center>
+              <Text style={{width: 90, marginLeft: 20}}>{this.capitalize(item.food_name)}</Text>
+
+              </Center>
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => this.pressHandler(item)}
               >
                 <Image
-                  style={styles.image}
+                  alt='food item'
+                  size={"xl"}
                   source={{ uri: item.photo.thumb }}
                 />
               </TouchableOpacity>
             </View>
           )}
         />
-
-        {/* <View style={styles.cols}>
-          {this.state.items &&
-            this.state.items.map((item, i) => {
-              return (
-                <View key={i}>
-                  <Text>{this.capitalize(item.food_name)}</Text>
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={() => this.pressHandler(item)}
-                  >
-                    <Image
-                      style={styles.image}
-                      source={{ uri: item.photo.thumb }}
-                    />
-                  </TouchableOpacity>
-                </View> */}
-        {/* );
-            })} */}
-        {/* </View> */}
       </View>
     );
   }
@@ -193,7 +176,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: "rgb(59,108,212)",
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: "100",
     textAlign: "center",
   },
