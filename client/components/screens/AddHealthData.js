@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View, ScrollView, TextInput, StyleSheet } from "react-native";
+import { View, ScrollView, TextInput, StyleSheet } from "react-native";
 import { connect } from "react-redux";
 import { db } from "../../../config.js";
 // import { TextField, Button, SegmentedControl } from "react-native-ios-kit";
@@ -15,11 +15,12 @@ import {
   CheckIcon,
   Button,
   HStack,
-  useToast
+  Text,
+  useToast,
 } from "native-base";
 
 function AddHealthData(props) {
-  const toast = useToast()
+  const toast = useToast();
   const [BG, setBG] = useState(100);
   const [units, setUnits] = useState(0);
 
@@ -27,7 +28,7 @@ function AddHealthData(props) {
 
   const mealsRef = db.collection("meals");
 
-  const { userId, mealId } = props.route.params;
+  const { userId, mealId, carbTotal } = props.route.params;
   async function handlePress() {
     await mealsRef.doc(mealId).update({
       preBG: BG,
@@ -37,81 +38,97 @@ function AddHealthData(props) {
     });
     toast.show({
       title: "Meal Logged!",
-      status: 'success',
+      status: "success",
       height: 70,
-      width: 250
-    })
+      width: 250,
+    });
     props.navigation.navigate("Home");
   }
 
   return (
     <View>
-      <Center>
-        <Stack mx={5} space={4} alignItems="center" w="100%">
-          <HStack>
-            <Text>Bloog Sugar</Text>
-            <Box mx={5} w="200">
-              <Slider
-                maxValue={400}
-                defaultValue={100}
-                colorScheme="cyan"
-                onChange={(v) => {
-                  setBG(Math.floor(v));
+      <Stack space={10}>
+        <Center>
+          <Button height={70} width="50%" onPress={handlePress}>
+            Log Meal
+          </Button>
+        </Center>
+
+        <HStack space={10}>
+          <VStack>
+            <Text fontSize="3xl">Total</Text>
+            <Text fontSize="3xl">Net Carbs</Text>
+          </VStack>
+          <Text fontSize="6xl">|</Text>
+
+          <Text fontSize="6xl">{carbTotal}g</Text>
+        </HStack>
+        <Center>
+          <Stack space={10}>
+            <Stack mx={5} space={10} alignItems="center" w="100%">
+              <HStack>
+                <Text>Bloog Sugar</Text>
+                <Box mx={5} w="200">
+                  <Slider
+                    maxValue={400}
+                    defaultValue={100}
+                    colorScheme="cyan"
+                    onChange={(v) => {
+                      setBG(Math.floor(v));
+                    }}
+                  >
+                    <Slider.Track>
+                      <Slider.FilledTrack />
+                    </Slider.Track>
+                    <Slider.Thumb />
+                  </Slider>
+                </Box>
+                <Text>{BG} mg/dL</Text>
+              </HStack>
+            </Stack>
+
+            <Stack mx={5} space={10} alignItems="center" w="100%">
+              <HStack space={3}>
+                <Text>Insulin Dose</Text>
+                <Box mx={5} w="200">
+                  <Slider
+                    defaultValue={0}
+                    colorScheme="cyan"
+                    onChange={(v) => {
+                      setUnits(Math.floor(v));
+                    }}
+                  >
+                    <Slider.Track>
+                      <Slider.FilledTrack />
+                    </Slider.Track>
+                    <Slider.Thumb />
+                  </Slider>
+                </Box>
+                <Text>{units} units</Text>
+              </HStack>
+            </Stack>
+
+            <VStack alignItems="center" space={9}>
+              <Select
+                selectedValue={mealType}
+                minWidth={200}
+                placeholder="Select Meal"
+                onValueChange={(itemValue) => setMealType(itemValue)}
+                _selectedItem={{
+                  bg: "cyan.600",
+                  endIcon: <CheckIcon size={4} />,
                 }}
               >
-                <Slider.Track>
-                  <Slider.FilledTrack />
-                </Slider.Track>
-                <Slider.Thumb />
-              </Slider>
-            </Box>
-            <Text>{BG} mg/dL</Text>
-          </HStack>
-        </Stack>
-
-        <Stack mx={5} space={4} alignItems="center" w="100%">
-          <HStack>
-          <Text>Insulin Dose</Text>
-          <Box mx={5} w="200">
-            <Slider
-              defaultValue={0}
-              colorScheme="cyan"
-              onChange={(v) => {
-                setUnits(Math.floor(v));
-              }}
-            >
-              <Slider.Track>
-                <Slider.FilledTrack />
-              </Slider.Track>
-              <Slider.Thumb />
-            </Slider>
-          </Box>
-          <Text>{units} units</Text>
-
-          </HStack>
-        </Stack>
-
-        <VStack alignItems="center" space={4}>
-          <Select
-            selectedValue={mealType}
-            minWidth={200}
-            placeholder="Select Meal"
-            onValueChange={(itemValue) => setMealType(itemValue)}
-            _selectedItem={{
-              bg: "cyan.600",
-              endIcon: <CheckIcon size={4} />,
-            }}
-          >
-            <Select.Item label="Breakfast" value="Breakfast" />
-            <Select.Item label="Lunch" value="Lunch" />
-            <Select.Item label="Dinner" value="Dinner" />
-            <Select.Item label="Snack" value="Snack" />
-            <Select.Item label="Dessert" value="Dessert" />
-          </Select>
-        </VStack>
-
-        <Button onPress={handlePress}>Enter Meal</Button>
-      </Center>
+                <Select.Item label="Breakfast" value="Breakfast" />
+                <Select.Item label="Lunch" value="Lunch" />
+                <Select.Item label="Dinner" value="Dinner" />
+                <Select.Item label="Snack" value="Snack" />
+                <Select.Item label="Dessert" value="Dessert" />
+              </Select>
+            </VStack>
+          </Stack>
+        </Center>
+      </Stack>
     </View>
   );
 }

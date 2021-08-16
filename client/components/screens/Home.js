@@ -8,15 +8,16 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  LogBox
 } from "react-native";
 import { connect } from "react-redux";
 import { fetchItems } from "../../store/items";
 import { db } from "../../../config.js";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Button, SearchBar } from "react-native-ios-kit";
-import { Box, Center, NativeBaseProvider } from "native-base";
+import {  SearchBar } from "react-native-ios-kit";
+import { Box, Center, NativeBaseProvider, Button } from "native-base";
 
 class Home extends React.Component {
   constructor() {
@@ -32,9 +33,7 @@ class Home extends React.Component {
     this.pressHandler = this.pressHandler.bind(this);
   }
 
-  renderItem({item}) {
-    return<View><Text>{item.photo.thumb}</Text></View>
-  }
+
 
   addToFirebase(usersRef, user) {
     usersRef.doc(user.id).set({
@@ -45,8 +44,19 @@ class Home extends React.Component {
     });
   }
 
+  capitalize(word) {
+    let capArr = []
+    let wordArr = word.split(' ');
+    wordArr.forEach(part => {
+      let capitalized = part[0].toUpperCase() + part.slice(1)
+      capArr.push(capitalized)
+    })
+    return capArr.join(' ')
+  }
+
+
   async componentDidMount() {
-    // console.log(this.props)
+    LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
     const usersRef = db.collection("users");
     const { user } = this.props;
     this.setState({
@@ -89,7 +99,7 @@ class Home extends React.Component {
       return item.attr_id === 291;
     });
     let parsedItem = {
-      name: item.food_name,
+      name: this.capitalize(item.food_name),
       servingSize: item.serving_qty,
       imageUrl: item.photo.thumb,
       servingWeight: item.serving_weight_grams,
@@ -126,16 +136,19 @@ class Home extends React.Component {
           animated
           placeholder="Search For Food..."
         />
-        <Button inline rounded onPress={this.searchHandler}>
+        <Button
+        width='100%'
+        onPress={this.searchHandler}>
           Find Food
         </Button>
+
 
         <View style={styles.cols}>
           {this.state.items &&
             this.state.items.map((item, i) => {
               return (
                 <View key={i}>
-                  <Text>{item.food_name}</Text>
+                  <Text>{this.capitalize(item.food_name)}</Text>
                   <TouchableOpacity
                     activeOpacity={0.7}
                     onPress={() => this.pressHandler(item)}
@@ -179,10 +192,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     backgroundColor: "white",
-    // flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
-    width: '100%'
 
   },
 });
