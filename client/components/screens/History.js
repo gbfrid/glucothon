@@ -1,14 +1,7 @@
 import React, { useState } from "react";
 import { View, ScrollView } from "react-native";
 import { db } from "../../../config.js";
-import {
-  Center,
-  Stack,
-  VStack,
-  HStack,
-  Image,
-  Text,
-} from "native-base";
+import { Center, Stack, VStack, HStack, Image, Text } from "native-base";
 
 const History = (props) => {
   const [mealHistoryArray, setMealHistory] = useState([]);
@@ -35,34 +28,49 @@ const History = (props) => {
   }, [props.navigation]);
 
   return (
-    <View>
+    <ScrollView>
+      <Stack  space={2}>
       {mealHistoryArray &&
         mealHistoryArray.map((meal, index) => {
           return (
-            <HStack key={index} space={3}>
-              <VStack>
-                <Text underline>Meal</Text>
-                <Text>{meal.mealType}</Text>
+            <HStack
+              space={1}
+              key={index}
+              style={{ backgroundColor: "#e0ffff" }}
+            >
+              <VStack style={{ width: "25%" }}>
+                <Center>
+                  <Text underline fontSize="md">
+                    Meal
+                  </Text>
+                  <Text>{meal.mealType}</Text>
+                </Center>
+              </VStack>
+              <VStack style={{ width: "20%" }}>
+                <Center>
+                  <Text underline>Net Carbs</Text>
+                  <Text>{(meal.items[0].carbs = meal.items[0].fiber)}</Text>
+                </Center>
               </VStack>
 
-              <VStack>
-                <Text underline>Net Carbs</Text>
-                <Text>{(meal.items[0].carbs = meal.items[0].fiber)}</Text>
+              <VStack style={{ width: "20%" }}>
+                <Center>
+                  <Text underline>Insulin</Text>
+                  <Text>{meal.insulinDose} units</Text>
+                </Center>
               </VStack>
 
-              <VStack>
-                <Text underline>Insulin</Text>
-                <Text>{meal.insulinDose} units</Text>
-              </VStack>
-
-              <VStack>
-                <Text underline>Premeal BG</Text>
-                <Text>{meal.preBG}</Text>
+              <VStack style={{ width: "20%" }}>
+                <Center>
+                  <Text underline>Premeal BG</Text>
+                  <Text>{meal.preBG}</Text>
+                </Center>
               </VStack>
             </HStack>
           );
         })}
-    </View>
+        </Stack>
+    </ScrollView>
   );
 };
 
