@@ -46,21 +46,14 @@ function AddHealthData(props) {
   }
 
   return (
-    <View>
+    <View style={{ marginLeft: 10 }}>
       <Stack space={10}>
-        <Center>
-          <Button height={70} width="50%" onPress={handlePress}>
-            Log Meal
-          </Button>
-        </Center>
-
         <HStack space={10}>
           <VStack>
             <Text fontSize="3xl">Total</Text>
             <Text fontSize="3xl">Net Carbs</Text>
           </VStack>
-          <Text fontSize="6xl">|</Text>
-
+          <Text fontSize="5xl">|</Text>
           <Text fontSize="6xl">{carbTotal}g</Text>
         </HStack>
         <Center>
@@ -111,8 +104,8 @@ function AddHealthData(props) {
             <VStack alignItems="center" space={9}>
               <Select
                 selectedValue={mealType}
-                minWidth={200}
-                placeholder="Select Meal"
+                width={300}
+                placeholder="Select Meal Type"
                 onValueChange={(itemValue) => setMealType(itemValue)}
                 _selectedItem={{
                   bg: "cyan.600",
@@ -127,6 +120,11 @@ function AddHealthData(props) {
               </Select>
             </VStack>
           </Stack>
+        </Center>
+        <Center>
+          <Button height={70} width="50%" onPress={handlePress}>
+            Log Meal
+          </Button>
         </Center>
       </Stack>
     </View>

@@ -61,48 +61,43 @@ function Meal(props) {
     });
   }
   return (
-    <View>
-      <Center>
-      <Button
-        height={20}
-        width='50%'
-        onPress={pressHandler}
-      >
-        Add Health Data
-      </Button>
-      </Center>
+    <View style={{flex: 1}}>
+
       <ScrollView>
         <Stack space={2} >
           {!mealItemArray ? (
-            <Text>No items in meal</Text>
+            <Center style={{margin: 150}}>
+               <Text fontSize='md'>No items in meal</Text>
+            </Center>
+
           ) : (
             mealItemArray.map((item, index) => {
               return (
-                <HStack space={4} key={index} style={{backgroundColor: '#e0ffff'}}>
+                <HStack space={1} key={index} style={{backgroundColor: '#e0ffff'}}>
                   <Image
                     alt="Text"
                     source={{ uri: item.imageUrl }}
                     size={"lg"}
                   />
-                  <VStack>
+                  <VStack style={{width: "25%"}}>
                     <Center>
-                      <Text fontSize="2xl"> {item.name}</Text>
+                      <Text fontSize="md"> {item.name}</Text>
                       <Text>Qty: {item.servingSize}</Text>
                     </Center>
                   </VStack>
-                  <VStack>
+                  <VStack style={{width: "20%"}}>
                     <Center>
                       <Text>Net Carbs</Text>
                       <Text>{(item.carbs - item.fiber).toFixed(1)}</Text>
                     </Center>
                   </VStack>
-                  <VStack>
+                  <VStack style={{width: "10%"}}>
                     <Center>
                       <Text>Fat</Text>
                       <Text>{item.fat}</Text>
                     </Center>
                   </VStack>
-                  <VStack>
+                  <VStack style={{width: "15%"}}>
                     <Center>
                       <Text>Protein</Text>
                       <Text>{item.protein}</Text>
@@ -114,6 +109,15 @@ function Meal(props) {
           )}
         </Stack>
       </ScrollView>
+      <Center>
+      <Button
+        height={20}
+        width='50%'
+        onPress={pressHandler}
+      >
+        Add Health Data
+      </Button>
+      </Center>
     </View>
   );
 }

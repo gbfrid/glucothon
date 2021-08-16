@@ -137,7 +137,7 @@ class Home extends React.Component {
           placeholder="Search For Food..."
         />
         <Button
-        width='100%'
+        width='50%'
         onPress={this.searchHandler}>
           Find Food
         </Button>

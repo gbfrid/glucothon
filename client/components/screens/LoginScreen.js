@@ -1,19 +1,20 @@
 import "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import ExpoStatusBar from "expo-status-bar/build/ExpoStatusBar";
-import * as Google from 'expo-google-app-auth';
-import firebase from 'firebase';
+import * as Google from "expo-google-app-auth";
+import firebase from "firebase";
+import { Box, Center, NativeBaseProvider, Button } from "native-base";
 
-const LoginScreen = ( { navigation } ) => {
-
-  const iosClientId = '696943573998-jpljavotl70ntn5ht8hltgkf6aqqhd8u.apps.googleusercontent.com'
+const LoginScreen = ({ navigation }) => {
+  const iosClientId =
+    "696943573998-jpljavotl70ntn5ht8hltgkf6aqqhd8u.apps.googleusercontent.com";
   const signInAsync = async () => {
     console.log("LoginScreen.js 6 | loggin in");
     try {
       const { type, user } = await Google.logInAsync({
-        iosClientId: iosClientId
+        iosClientId: iosClientId,
       });
 
       if (type === "success") {
@@ -27,11 +28,12 @@ const LoginScreen = ( { navigation } ) => {
 
   return (
     <View style={styles.container}>
-      <Button title="Login with Google" onPress={signInAsync} />
+      <Button size="lg" title="Login with Google" onPress={signInAsync}>
+        Log in with Google!
+      </Button>
     </View>
   );
-
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -42,4 +44,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen
+export default LoginScreen;
