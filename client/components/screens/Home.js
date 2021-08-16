@@ -8,6 +8,7 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
+  FlatList
 } from "react-native";
 import { connect } from "react-redux";
 import { fetchItems } from "../../store/items";
@@ -15,6 +16,7 @@ import { db } from "../../../config.js";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Button, SearchBar } from "react-native-ios-kit";
+import { Box, Center, NativeBaseProvider } from "native-base";
 
 class Home extends React.Component {
   constructor() {
@@ -28,6 +30,10 @@ class Home extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.searchHandler = this.searchHandler.bind(this);
     this.pressHandler = this.pressHandler.bind(this);
+  }
+
+  renderItem({item}) {
+    return<View><Text>{item.photo.thumb}</Text></View>
   }
 
   addToFirebase(usersRef, user) {
@@ -60,7 +66,7 @@ class Home extends React.Component {
   async searchHandler() {
     await this.props.fetchItems(this.state.text);
     let items = await this.props.items;
-    items = items.common.slice(0, 10);
+    items = items.common.slice(0, 27);
     this.setState({
       items: items,
     });
@@ -120,23 +126,16 @@ class Home extends React.Component {
           animated
           placeholder="Search For Food..."
         />
-
-        {/* <TextInput
-          name="text"
-          value={this.state.text}
-          style={{ fontSize: 42, color: "steelblue" }}
-          placeholder="Enter A Food"
-          onChangeText={this.handleChange}
-        /> */}
-
         <Button inline rounded onPress={this.searchHandler}>
           Find Food
         </Button>
-        <ScrollView>
+
+        <View style={styles.cols}>
           {this.state.items &&
             this.state.items.map((item, i) => {
               return (
                 <View key={i}>
+                  <Text>{item.food_name}</Text>
                   <TouchableOpacity
                     activeOpacity={0.7}
                     onPress={() => this.pressHandler(item)}
@@ -145,12 +144,12 @@ class Home extends React.Component {
                       style={styles.image}
                       source={{ uri: item.photo.thumb }}
                     />
-                    <Text>{item.food_name}</Text>
+
                   </TouchableOpacity>
                 </View>
               );
             })}
-        </ScrollView>
+        </View>
       </View>
     );
   }
@@ -158,8 +157,17 @@ class Home extends React.Component {
 
 const styles = StyleSheet.create({
   image: {
-    width: 75,
-    height: 75,
+    width: 90,
+    height: 90,
+  },
+  cols: {
+    flex: 1,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    margin: 10,
+    maxHeight: 500,
+    width: '100%'
+
   },
   text: {
     color: "rgb(59,108,212)",
@@ -169,9 +177,13 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    flexDirection: 'column',
     backgroundColor: "white",
+    // flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-start",
+    width: '100%'
+
   },
 });
 
