@@ -1,16 +1,11 @@
 import React, { useState } from "react";
 import { View, ScrollView } from "react-native";
-import { connect } from "react-redux";
 import { db } from "../../../config.js";
 import {
   Center,
   Stack,
-  Box,
-  Select,
   VStack,
-  Button,
   HStack,
-  useToast,
   Image,
   Text,
 } from "native-base";

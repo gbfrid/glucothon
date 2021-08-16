@@ -9,14 +9,12 @@ import {
   ScrollView,
   TouchableOpacity,
   FlatList,
-  LogBox
+  LogBox,
 } from "react-native";
 import { connect } from "react-redux";
 import { fetchItems } from "../../store/items";
 import { db } from "../../../config.js";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import {  SearchBar } from "react-native-ios-kit";
+import { SearchBar } from "react-native-ios-kit";
 import { Box, Center, NativeBaseProvider, Button } from "native-base";
 
 class Home extends React.Component {
@@ -33,8 +31,6 @@ class Home extends React.Component {
     this.pressHandler = this.pressHandler.bind(this);
   }
 
-
-
   addToFirebase(usersRef, user) {
     usersRef.doc(user.id).set({
       name: user.name,
@@ -45,18 +41,17 @@ class Home extends React.Component {
   }
 
   capitalize(word) {
-    let capArr = []
-    let wordArr = word.split(' ');
-    wordArr.forEach(part => {
-      let capitalized = part[0].toUpperCase() + part.slice(1)
-      capArr.push(capitalized)
-    })
-    return capArr.join(' ')
+    let capArr = [];
+    let wordArr = word.split(" ");
+    wordArr.forEach((part) => {
+      let capitalized = part[0].toUpperCase() + part.slice(1);
+      capArr.push(capitalized);
+    });
+    return capArr.join(" ");
   }
 
-
   async componentDidMount() {
-    LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
+    LogBox.ignoreLogs(["Animated: `useNativeDriver`"]);
     const usersRef = db.collection("users");
     const { user } = this.props;
     this.setState({
@@ -136,14 +131,30 @@ class Home extends React.Component {
           animated
           placeholder="Search For Food..."
         />
-        <Button
-        width='50%'
-        onPress={this.searchHandler}>
+        <Button width="50%" onPress={this.searchHandler}>
           Find Food
         </Button>
+        <FlatList
+          data={this.state.items}
+          keyExtractor={(item) => item.food_name}
+          numColumns={2}
+          renderItem={({ item }) => (
+            <View>
+              <Text>{this.capitalize(item.food_name)}</Text>
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => this.pressHandler(item)}
+              >
+                <Image
+                  style={styles.image}
+                  source={{ uri: item.photo.thumb }}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+        />
 
-
-        <View style={styles.cols}>
+        {/* <View style={styles.cols}>
           {this.state.items &&
             this.state.items.map((item, i) => {
               return (
@@ -157,12 +168,11 @@ class Home extends React.Component {
                       style={styles.image}
                       source={{ uri: item.photo.thumb }}
                     />
-
                   </TouchableOpacity>
-                </View>
-              );
-            })}
-        </View>
+                </View> */}
+        {/* );
+            })} */}
+        {/* </View> */}
       </View>
     );
   }
@@ -179,8 +189,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     margin: 10,
     maxHeight: 500,
-    width: '100%'
-
+    width: "100%",
   },
   text: {
     color: "rgb(59,108,212)",
@@ -190,11 +199,10 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    flexDirection: 'column',
+    flexDirection: "column",
     backgroundColor: "white",
     alignItems: "center",
     justifyContent: "flex-start",
-
   },
 });
 

@@ -30,8 +30,8 @@ export default function App() {
       <NativeBaseProvider>
         <ThemeProvider>
           <NavigationContainer>
-            <Stack.Navigator initialRouteName="Login">
-              <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Navigator initialRouteName="Logout">
+              <Stack.Screen name="Logout" component={LoginScreen} />
               <Stack.Screen name="GlucoThon" component={HomeScreen} />
               <Stack.Screen name="FoodItem" component={FoodItem} />
               <Stack.Screen name="AddHealthData" component={AddHealthData} />
