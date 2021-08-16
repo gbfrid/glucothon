@@ -23,8 +23,8 @@ function AddHealthData(props) {
   const toast = useToast();
   const [BG, setBG] = useState(100);
   const [units, setUnits] = useState(0);
-
   const [mealType, setMealType] = useState("");
+
 
   const mealsRef = db.collection("meals");
 

@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "./Home.js";
 import Meal from "./Meal.js";
+import History from "./History.js";
 import { Ionicons } from "@expo/vector-icons";
 
 const Stack = createNativeStackNavigator();
@@ -30,6 +31,14 @@ function HomeScreen(props) {
           headerShown: false }}
       >
         {(props) => <Meal {...props} user={user} />}
+      </Stack.Screen>
+      <Stack.Screen
+        name="History"
+        options={{
+          tabBarIcon: () => <Ionicons name="water" size={35} />,
+          headerShown: false }}
+      >
+        {(props) => <History {...props} user={user} />}
       </Stack.Screen>
     </Tab.Navigator>
   );

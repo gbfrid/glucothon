@@ -43,7 +43,7 @@ class FoodItem extends React.Component {
 
   updateServingSize(nutrientValue, itemValue) {
     const updated = nutrientValue * parseInt(itemValue, 10);
-    return updated;
+    return updated.toFixed(0);
   }
 
   addToFirebase(mealsRef, item) {

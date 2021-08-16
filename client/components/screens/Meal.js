@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import { View, ScrollView } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { connect } from "react-redux";
 import { db } from "../../../config.js";
-// import { Button } from "react-native-ios-kit";
 import {
   Center,
   FormControl,
@@ -29,7 +25,6 @@ function Meal(props) {
 
   React.useEffect(() => {
     const onTab = props.navigation.addListener("focus", async () => {
-      // console.log(props.user.id)
       const mealsRef = db.collection("meals");
       try {
         let mealArray;
@@ -50,15 +45,20 @@ function Meal(props) {
   }, [props.navigation]);
 
   const pressHandler = () => {
-    let carbTotal = 0;
-    mealItemArray.forEach(item => {
-      carbTotal += (item.carbs - item.fiber)
-    })
-    props.navigation.navigate("AddHealthData", {
-      userId: props.user.id,
-      mealId: mealId,
-      carbTotal: carbTotal.toFixed(1)
-    });
+    if (!mealItemArray) {
+      alert('Add some items to your meal!')
+    } else {
+      let carbTotal = 0;
+      mealItemArray.forEach(item => {
+        carbTotal += (item.carbs - item.fiber)
+      })
+      props.navigation.navigate("AddHealthData", {
+        userId: props.user.id,
+        mealId: mealId,
+        carbTotal: carbTotal.toFixed(1)
+      });
+    }
+
   }
   return (
     <View style={{flex: 1}}>
