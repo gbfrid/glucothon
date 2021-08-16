@@ -49,7 +49,7 @@ const History = (props) => {
               <VStack style={{ width: "20%" }}>
                 <Center>
                   <Text underline>Net Carbs</Text>
-                  <Text>{(meal.items[0].carbs = meal.items[0].fiber)}</Text>
+                  <Text>{(meal.items[0].carbs - meal.items[0].fiber).toFixed(0)}</Text>
                 </Center>
               </VStack>
 

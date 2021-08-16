@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, Dimensions } from "react-native";
 import { connect } from "react-redux";
 import { db } from "../../../config.js";
 import {
@@ -23,6 +23,8 @@ import {
 function Meal(props) {
   const [mealItemArray, setMealItems] = useState([]);
   const [mealId, setMealId] = useState("");
+  const{width,height} = Dimensions.get('window');
+
 
   React.useEffect(() => {
     const onTab = props.navigation.addListener("focus", async () => {
@@ -62,10 +64,9 @@ function Meal(props) {
 
   }
   return (
-    <View style={{flex: 1}}>
+    <View>
       <ZStack>
-
-      <ScrollView>
+      <ScrollView height={height - 176}>
         <Stack space={2} >
           {!mealItemArray ? (
             <Center style={{margin: 150}}>
@@ -113,7 +114,7 @@ function Meal(props) {
       </ScrollView>
       <Center>
       <Button
-        style={{position:'absolute', top: 670, left: 120, opacity: 0.7}}
+        style={{position:'absolute', top: height - 276, left: width - 306, opacity: 0.7}}
         height={20}
         width={200}
         onPress={pressHandler}

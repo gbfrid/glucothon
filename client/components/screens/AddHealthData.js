@@ -28,7 +28,7 @@ function AddHealthData(props) {
 
   const mealsRef = db.collection("meals");
 
-  const { userId, mealId, carbTotal } = props.route.params;
+  const { mealId, carbTotal } = props.route.params;
   async function handlePress() {
     await mealsRef.doc(mealId).update({
       preBG: BG,
